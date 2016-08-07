@@ -17,19 +17,17 @@ struct Artist {
     
     var artists = [Artist]()
     
-    guard let path = NSBundle.mainBundle().pathForResource(
-      "artists", ofType: "json"), data = NSData(contentsOfFile: path) else {
-        return artists
-    }
+    guard let path = NSBundle.mainBundle()
+      .pathForResource("artists", ofType: "json"),
+      data = NSData(contentsOfFile: path)
+      else {return artists}
     
     do {
-      let rootObject = try NSJSONSerialization.JSONObjectWithData(
-        data, options: NSJSONReadingOptions.AllowFragments)
+      let rootObject = try NSJSONSerialization
+        .JSONObjectWithData(data, options: .AllowFragments)
       
       guard let artistObjects = rootObject["artists"] as?
-        [[String: AnyObject]] else {
-        return artists
-      }
+        [[String: AnyObject]] else {return artists}
       
       for artistObject in artistObjects {
         if let name = artistObject["name"] as? String,
@@ -43,20 +41,21 @@ struct Artist {
               workImageName = workObject["image"],
               workImage = UIImage(named: workImageName + ".jpg"),
               info = workObject["info"] {
-              works.append(Work(title: workTitle,image: workImage,info: info, isExpanded: false))
+              works.append(Work(title: workTitle, image: workImage,
+                info: info, isExpanded: false))
             }
           }
           
-          let artist = Artist(name: name, bio: bio, image: image, works: works)
+          let artist = Artist(name: name, bio: bio,
+                              image: image, works: works)
+          
           artists.append(artist)
         }
       }
       
-    } catch {
-      return artists
-    }
+    } catch {return artists}
     
     return artists
   }
   
-}
+} // end of class
